@@ -38,6 +38,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                   borderRadius: BorderRadius.circular(50),
                   child: Container(
                     height: 48,
+                    width: 224,
                     color: AppColors.secondary,
                 
                     child: Stack(
