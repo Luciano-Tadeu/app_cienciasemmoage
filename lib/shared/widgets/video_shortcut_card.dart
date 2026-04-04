@@ -1,0 +1,1 @@
+// O card que fica na Home/Search e leva pro vídeo

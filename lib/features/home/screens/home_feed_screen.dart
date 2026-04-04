@@ -1,0 +1,1 @@
+// Onde ficam as categorias e destaques
