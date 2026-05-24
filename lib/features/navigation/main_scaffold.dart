@@ -1,3 +1,4 @@
+import 'package:app_cienciasemmoage/features/video_feed/screens/video_feed_screen.dart';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 
@@ -16,7 +17,7 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   final List<Widget> _telas = [
     const Center(child: Text('Tela 1: Home (Feed de Categorias)', style: TextStyle(fontSize: 20))),
-    const Center(child: Text('Tela 2: Feed de Vídeos (O TikTok da Ciência)', style: TextStyle(fontSize: 20))),
+    const VideoFeed(),
     const Center(child: Text('Tela 3: Pesquisa (Descobrir)', style: TextStyle(fontSize: 20))),
   ];
 
