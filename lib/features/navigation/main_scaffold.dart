@@ -1,3 +1,4 @@
+import 'package:app_cienciasemmoage/features/header/header.dart';
 import 'package:app_cienciasemmoage/features/video_feed/screens/video_feed_screen.dart';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
@@ -14,6 +15,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   
   // 0 = Home, 1 = Vídeos, 2 = Pesquisa
   int _abaAtual = 0;
+  final PageController controller = PageController();
 
   final List<Widget> _telas = [
     const Center(child: Text('Tela 1: Home (Feed de Categorias)', style: TextStyle(fontSize: 20))),
@@ -21,13 +23,28 @@ class _MainScaffoldState extends State<MainScaffold> {
     const Center(child: Text('Tela 3: Pesquisa (Descobrir)', style: TextStyle(fontSize: 20))),
   ];
 
-
   @override
   Widget build(BuildContext context) {
     double larguraTela = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: _telas[_abaAtual],
+      body: Stack(
+        children: [
+          PageView(
+            controller: controller,
+            physics: NeverScrollableScrollPhysics(),
+            onPageChanged: (value) => {
+              setState(() => _abaAtual = value)
+            },
+            children: [
+              _telas[0],
+              _telas[1],
+              _telas[2],
+            ],
+          ),
+          Header(paginaAtual: _abaAtual),
+        ],
+      ),
       bottomNavigationBar: SafeArea(
         child: Padding(
             padding: const EdgeInsets.only(bottom: 24),
@@ -87,7 +104,9 @@ class _MainScaffoldState extends State<MainScaffold> {
   Widget _construirBotao(IconData icone, int indice) {
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => _abaAtual = indice),
+        onTap: () {
+          controller.animateToPage(indice, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+        },
         behavior: HitTestBehavior.opaque,
           
           child: Center(

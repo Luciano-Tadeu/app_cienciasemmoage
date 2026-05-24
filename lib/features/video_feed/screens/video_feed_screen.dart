@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 
-class VideoFeed extends StatelessWidget {
+class VideoFeed extends StatefulWidget  {
   const VideoFeed({super.key});
+  
+  @override
+  State<StatefulWidget> createState() {
+    return VideoFeedState();
+  }
+
+}
+
+class VideoFeedState extends State<VideoFeed> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -15,5 +26,4 @@ class VideoFeed extends StatelessWidget {
       ),
     ); 
   }
-
 }
