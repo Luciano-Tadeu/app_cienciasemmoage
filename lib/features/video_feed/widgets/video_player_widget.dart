@@ -2,6 +2,7 @@ import 'package:app_cienciasemmoage/core/theme/app_colors.dart';
 import 'package:app_cienciasemmoage/features/video_feed/widgets/youtube_service.dart';
 import 'package:app_cienciasemmoage/models/video.dart';
 import 'package:flutter/material.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoPlayer extends StatefulWidget {
   final String videoId;
@@ -29,21 +30,32 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
     carregarVideo();
   }
 
+
   void carregarVideo() async {
     final result = await YoutubeService().buscarVideo(widget.videoId);
+
     if (!mounted) return;
 
-    setState(() => video = result);
+    print(widget.videoId);
+
+    setState(() {
+      video = result;
+    });
+
     print(video!.titulo);
     print(video!.tags);
-    print(video!.id);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(),
+        // YoutubePlayer(controller: _controller,),
         Align(
           alignment: Alignment.bottomLeft,
           child: Container(

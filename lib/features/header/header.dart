@@ -1,5 +1,4 @@
 import 'package:app_cienciasemmoage/core/theme/app_colors.dart';
-import 'package:app_cienciasemmoage/features/video_feed/widgets/youtube_service.dart';
 import 'package:flutter/material.dart';
 
 class Header extends StatefulWidget {
@@ -50,7 +49,7 @@ class HeaderState extends State<Header> {
     int idAtual = ++animId;
 
     setState(() => headerIconesExtras = false);
-    await Future.delayed(Duration(milliseconds: 400));
+    await Future.delayed(Duration(milliseconds: 200));
 
     if (idAtual != animId) return;
     
