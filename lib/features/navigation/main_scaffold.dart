@@ -43,60 +43,62 @@ class _MainScaffoldState extends State<MainScaffold> {
             ],
           ),
           Header(paginaAtual: _abaAtual),
-        ],
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-            padding: const EdgeInsets.only(bottom: 24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ClipRRect(
-                
-                  borderRadius: BorderRadius.circular(50),
-                  child: Container(
-                    height: 48,
-                    width: 224,
-                    color: AppColors.secondary,
-                
-                    child: Stack(
-                      children: [
-                
-                        AnimatedAlign(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                          alignment: Alignment(
-                            _abaAtual == 0? -0.8 : (_abaAtual == 1? 0.0 : 0.8), // Coord em X
-                            0.0 // Coord em Y
-                          ),
-                
-                          child: Container(
-                            height: 38,
-                            width: 38,
-                            decoration: BoxDecoration(
-                              color: AppColors.tertiary,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        ),
-                
-                        Positioned.fill(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SafeArea(
+              child: Padding(
+                  padding: const EdgeInsets.only(bottom: 24),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Container(
+                          height: 48,
+                          width: 224,
+                          color: AppColors.secondary,
+                      
+                          child: Stack(
                             children: [
-                              _construirBotao(Icons.home_rounded, 0),
-                              _construirBotao(Icons.play_circle_fill_rounded, 1),
-                              _construirBotao(Icons.search_rounded, 2),
+                      
+                              AnimatedAlign(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                                alignment: Alignment(
+                                  _abaAtual == 0? -0.8 : (_abaAtual == 1? 0.0 : 0.8), // Coord em X
+                                  0.0 // Coord em Y
+                                ),
+                      
+                                child: Container(
+                                  height: 38,
+                                  width: 38,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.tertiary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ),
+                      
+                              Positioned.fill(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    _construirBotao(Icons.home_rounded, 0),
+                                    _construirBotao(Icons.play_circle_fill_rounded, 1),
+                                    _construirBotao(Icons.search_rounded, 2),
+                                  ],
+                                ),
+                              )
                             ],
                           ),
-                        )
-                      ],
-                    ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
             ),
           ),
+        ],
       ),
     );
   }

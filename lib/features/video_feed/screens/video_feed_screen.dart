@@ -1,3 +1,4 @@
+import 'package:app_cienciasemmoage/features/video_feed/widgets/video_player_widget.dart';
 import 'package:flutter/material.dart';
 
 class VideoFeed extends StatefulWidget  {
@@ -7,7 +8,6 @@ class VideoFeed extends StatefulWidget  {
   State<StatefulWidget> createState() {
     return VideoFeedState();
   }
-
 }
 
 class VideoFeedState extends State<VideoFeed> with AutomaticKeepAliveClientMixin {
@@ -20,8 +20,8 @@ class VideoFeedState extends State<VideoFeed> with AutomaticKeepAliveClientMixin
       body: PageView(
         scrollDirection: Axis.vertical,
         children: [
-          Center(child: Text("pagina 1"),),
-          Center(child: Text("pagina 2"),),
+          VideoPlayer(videoId: "v3140NQVBXQ",),
+          VideoPlayer(videoId: "RwLHbJw7tLI",),
         ],
       ),
     ); 
