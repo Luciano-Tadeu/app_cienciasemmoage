@@ -19,6 +19,13 @@ class VideoPlayer extends StatefulWidget {
 } 
 
 class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientMixin {
+  final YoutubePlayerController _controller = YoutubePlayerController(
+    initialVideoId: "",
+    flags: YoutubePlayerFlags(
+      mute: true,
+      autoPlay: false,
+    )
+  );
   Video? video;
 
   @override
@@ -30,7 +37,6 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
     carregarVideo();
   }
 
-
   void carregarVideo() async {
     final result = await YoutubeService().buscarVideo(widget.videoId);
 
@@ -39,11 +45,9 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
     print(widget.videoId);
 
     setState(() {
+      print("alo ${widget.videoId}");
       video = result;
     });
-
-    print(video!.titulo);
-    print(video!.tags);
   }
 
   @override
@@ -53,46 +57,71 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // YoutubePlayer(controller: _controller,),
-        Align(
-          alignment: Alignment.bottomLeft,
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.transparent, const Color.fromARGB(104, 142, 66, 43), const Color.fromARGB(220, 142, 66, 43), AppColors.tertiary]
-              )
+    return Container(
+      color: AppColors.tertiary,
+      child: Stack(
+        children: [
+          Center(
+            child: YoutubePlayer(
+              controller: _controller,
+              aspectRatio: 9 / 16,
+              onReady: () {
+                _controller.cue(widget.videoId);
+              },
             ),
-            width: double.infinity,
-            height: 250,
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 12),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (video != null) ...[
-                      Text(
-                        video!.titulo, 
-                        style: TextStyle(
-                          fontSize: 26
-                        )
-                      ),
-                      Text(video!.tags.toString()),
-                      Text("Ler mais...")
-                    ],
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    const Color.fromARGB(188, 142, 66, 43),
+                    AppColors.tertiary
+                  ],
+                  stops: [
+                    0.0,
+                    0.4,
+                    0.6
                   ]
+                )
+              ),
+              width: double.infinity,
+              height: 250,
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12, right: 12),
+                  child: DefaultTextStyle(
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (video != null) ...[
+                          Text(
+                            video!.titulo, 
+                            style: TextStyle(
+                              fontSize: 26
+                            )
+                          ),
+                          Text(video!.tags.toString()),
+                          Text("Ler mais...")
+                        ],
+                      ]
+                    ),
+                  ) 
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
