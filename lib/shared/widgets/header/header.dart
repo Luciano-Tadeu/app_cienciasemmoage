@@ -1,12 +1,13 @@
 import 'package:app_cienciasemmoage/core/theme/app_colors.dart';
+import 'package:app_cienciasemmoage/shared/widgets/header/header_controller.dart';
+import 'package:app_cienciasemmoage/shared/widgets/header/header_modes.dart';
 import 'package:flutter/material.dart';
 
 class Header extends StatefulWidget {
-  final int paginaAtual;
+  static final HeaderController controller = HeaderController();
 
   const Header({
-    super.key,
-    required this.paginaAtual
+    super.key
   });
 
   @override
@@ -18,24 +19,33 @@ class Header extends StatefulWidget {
 class HeaderState extends State<Header> {
   bool headerExpandido = false;
   bool headerIconesExtras = false;
+  bool headerDesativado = false;
 
   int animId = 0;
 
   @override
-  void didUpdateWidget(covariant Header oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  void initState() {
+    super.initState();
+    Header.controller.addListener(mudarModo);
+  }
 
-    if (oldWidget.paginaAtual != widget.paginaAtual) {
-      if (widget.paginaAtual == 0) {
+  void mudarModo() {
+    switch (Header.controller.modo) {
+      case HeaderModes.EXPANDIDO:
         expandirHeader();
-      } else {
+        break;
+      case HeaderModes.ENCOLHIDO:
         encolherHeader();
-      }
+        break;
+      case HeaderModes.DESATIVADO:
+        desativarHeader();
+        break;
     }
   }
 
   void expandirHeader() async {
     int idAtual = ++animId;
+    headerDesativado = false;
 
     setState(() => headerExpandido = true);
     await Future.delayed(Duration(milliseconds: 500));
@@ -47,6 +57,7 @@ class HeaderState extends State<Header> {
 
   void encolherHeader() async {
     int idAtual = ++animId;
+    headerDesativado = false;
 
     setState(() => headerIconesExtras = false);
     await Future.delayed(Duration(milliseconds: 200));
@@ -56,6 +67,20 @@ class HeaderState extends State<Header> {
     setState(() => headerExpandido = false);
   }
 
+  void desativarHeader() async {
+    setState(() {
+      headerIconesExtras = false;
+      headerExpandido = false;
+      headerDesativado = true;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Header.controller.removeListener(mudarModo);
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -63,7 +88,7 @@ class HeaderState extends State<Header> {
       duration: Duration(milliseconds: 300),
 
       width: double.infinity,
-      height: headerExpandido ? 180 : 140,
+      height: headerExpandido ? 180 : (headerDesativado ? 0 : 140),
 
       decoration: BoxDecoration(
         color: AppColors.tertiary,

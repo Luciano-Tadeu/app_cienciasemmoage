@@ -18,7 +18,7 @@ class Video {
           ["thumbnails"]
           ["high"]
           ["url"],
-      tags: json["snippet"]["tags"],
+      tags: json["snippet"]["tags"] ?? [],
       id: json["id"]
     );
   }

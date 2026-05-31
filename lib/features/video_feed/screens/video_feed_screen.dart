@@ -16,13 +16,21 @@ class VideoFeedState extends State<VideoFeed> with AutomaticKeepAliveClientMixin
   bool get wantKeepAlive => true;
   int actPage = 0;
 
-  final List<String> videoList = [
-    "v3140NQVBXQ",
-    "RwLHbJw7tLI"
-  ];
+  List<String> videoList = [];
 
-  void printarVideos() async {
-    print(await YoutubeService().listarVideos());
+  @override
+  void initState() {
+    super.initState();
+
+    getVideos();
+  }
+
+  void getVideos() async {
+    List<String> videos = await YoutubeService().listarVideos();
+    
+    setState(() {
+      videoList = videos;
+    });
   }
 
   @override
@@ -34,15 +42,14 @@ class VideoFeedState extends State<VideoFeed> with AutomaticKeepAliveClientMixin
         allowImplicitScrolling: true,
         scrollDirection: Axis.vertical,
         children: [
-          for (int i = 0; i < videoList.length; i++) 
-            VideoPlayer(videoId: videoList[i], isPlaying: actPage == i)
+          if (videoList.isNotEmpty) 
+            for (int i = 0; i < 3; i++) 
+              VideoPlayer(videoId: videoList[i], isPlaying: actPage == i)
         ],
         onPageChanged: (idx) {
           setState(() {
             actPage = idx;
           });
-          printarVideos();
-          print("trocou para ${actPage}");
         },
       ),
     ); 

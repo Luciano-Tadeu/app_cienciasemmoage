@@ -2,6 +2,7 @@ import 'package:app_cienciasemmoage/core/theme/app_colors.dart';
 import 'package:app_cienciasemmoage/features/video_feed/widgets/tag.dart';
 import 'package:app_cienciasemmoage/features/video_feed/widgets/youtube_service.dart';
 import 'package:app_cienciasemmoage/models/video.dart';
+import 'package:app_cienciasemmoage/shared/widgets/header/header.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -32,23 +33,26 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
   @override
   void initState() {
     super.initState();
-    carregarVideo();
-  }
-
-  void carregarVideo() async {
     _controller = YoutubePlayerController(
       initialVideoId: widget.videoId,
       flags: YoutubePlayerFlags(
         mute: true,
-        autoPlay: true,
+        autoPlay: false,
+        hideControls: true,
+        disableDragSeek: true,
+        hideThumbnail: true
       )
     );
+
+    carregarVideo();
+  }
+
+  void carregarVideo() async {
+    if (video != null) return;
 
     final result = await YoutubeService().buscarVideo(widget.videoId);
 
     if (!mounted) return;
-
-    print(widget.videoId);
 
     setState(() {
       video = result;
@@ -56,13 +60,19 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
   }
 
   void tryPlayingVideo() {
-    print("Tentou algo ${widget.isPlaying} ${isReadyToPlay}");
     if (widget.isPlaying && isReadyToPlay) {
-      print("e conseguiu");
       _controller.play();
     } else {
-      print("e falhou");
+      _controller.seekTo(Duration.zero);
       _controller.pause();
+    }
+  }
+
+  void changeVideoState() {
+    if (_controller.value.isPlaying) {
+      _controller.pause();
+    } else {
+      _controller.play();
     }
   }
 
@@ -76,7 +86,6 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
   void didUpdateWidget(covariant VideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
   
-    print("widget atualizou");
     if (oldWidget.isPlaying != widget.isPlaying) tryPlayingVideo();
   }
 
@@ -88,20 +97,36 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
       color: AppColors.tertiary,
       child: Stack(
         children: [
-          Center(
-            child: YoutubePlayer(
-              controller: _controller,
-              aspectRatio: 9 / 16,
-              onReady: () {
-                _controller.cue(widget.videoId);
-                isReadyToPlay = true;
-                tryPlayingVideo();
-              },
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            color: Colors.black
+          ),
+          GestureDetector(
+            onTap: () {
+              changeVideoState();
+            },
+            child: Center(
+              child: YoutubePlayer(
+                controller: _controller,
+                aspectRatio: 9 / 20,
+                showVideoProgressIndicator: false,
+                onEnded: (e) {
+                  _controller.seekTo(Duration.zero);
+                  _controller.play();
+                },
+                onReady: () { 
+                  isReadyToPlay = true;
+                  tryPlayingVideo();
+                },
+              ),
             ),
           ),
           Align(
             alignment: Alignment.bottomLeft,
-            child: Container(
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              curve: Curves.easeOut,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,

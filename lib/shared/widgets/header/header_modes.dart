@@ -1,0 +1,5 @@
+enum HeaderModes {
+  DESATIVADO,
+  ENCOLHIDO,
+  EXPANDIDO
+}

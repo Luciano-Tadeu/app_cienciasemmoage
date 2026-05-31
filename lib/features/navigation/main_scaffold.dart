@@ -1,4 +1,4 @@
-import 'package:app_cienciasemmoage/shared/widgets/header.dart';
+import 'package:app_cienciasemmoage/shared/widgets/header/header.dart';
 import 'package:app_cienciasemmoage/features/video_feed/screens/video_feed_screen.dart';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
@@ -34,7 +34,22 @@ class _MainScaffoldState extends State<MainScaffold> {
             controller: controller,
             physics: NeverScrollableScrollPhysics(),
             onPageChanged: (value) => {
-              setState(() => _abaAtual = value)
+              setState(() {
+                if (value != _abaAtual) return;
+                Header.controller.trocarPagina(value);
+
+                switch (value) {
+                  case 0:
+                    Header.controller.expandir();
+                    break;
+                  case 1:
+                    Header.controller.encolher();
+                    break;
+                  case 2:
+                    Header.controller.encolher();
+                    break;
+                }
+              })
             },
             children: [
               _telas[0],
@@ -42,7 +57,7 @@ class _MainScaffoldState extends State<MainScaffold> {
               _telas[2],
             ],
           ),
-          Header(paginaAtual: _abaAtual),
+          Header(),
           Align(
             alignment: Alignment.bottomCenter,
             child: SafeArea(
@@ -107,6 +122,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     return Expanded(
       child: GestureDetector(
         onTap: () {
+          _abaAtual = indice;
           controller.animateToPage(indice, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
         },
         behavior: HitTestBehavior.opaque,
