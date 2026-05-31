@@ -178,7 +178,7 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
                             ],
                           ),
                           SizedBox(height: 12),
-                          Text("Ler mais...")
+                          // Text("Ler mais...")
                         ],
                       ]
                     ),
