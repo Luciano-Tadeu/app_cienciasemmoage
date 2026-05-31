@@ -24,7 +24,8 @@ class YoutubeService {
     }
   }
 
-  Future<void> listarVideos() async {
+  Future<List<String>> listarVideos() async {
+    List<String> videos = [];
     final url = Uri.parse(
       "https://www.googleapis.com/youtube/v3/playlistItems"
       "?part=snippet"
@@ -38,8 +39,12 @@ class YoutubeService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      print(data);
+      for (var item in data["items"]) {
+        videos.add(item["snippet"]["resourceId"]["videoId"]);
+      }
     }
+    
+    return videos;
   }
 
   Future<Video?> buscarVideo(String videoId) async {

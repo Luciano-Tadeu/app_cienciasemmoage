@@ -1,4 +1,4 @@
-import 'package:app_cienciasemmoage/features/header/header.dart';
+import 'package:app_cienciasemmoage/shared/widgets/header.dart';
 import 'package:app_cienciasemmoage/features/video_feed/screens/video_feed_screen.dart';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
