@@ -1,0 +1,4 @@
+enum VideoPlayerStatus {
+  PLAYING,
+  PAUSED
+}

@@ -1,3 +1,4 @@
+import 'package:app_cienciasemmoage/features/video_feed/widgets/video_player_status_manager.dart';
 import 'package:app_cienciasemmoage/shared/widgets/header/header.dart';
 import 'package:app_cienciasemmoage/features/video_feed/screens/video_feed_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,6 @@ class _MainScaffoldState extends State<MainScaffold> {
   // 0 = Home, 1 = Vídeos, 2 = Pesquisa
   int _abaAtual = 0;
   final PageController controller = PageController();
-
   final List<Widget> _telas = [
     const Center(child: Text('Tela 1: Home (Feed de Categorias)', style: TextStyle(fontSize: 20))),
     const VideoFeed(),
@@ -41,12 +41,15 @@ class _MainScaffoldState extends State<MainScaffold> {
                 switch (value) {
                   case 0:
                     Header.controller.expandir();
+                    VideoPlayerStatusManager.instance.pauseAllVideos();
                     break;
                   case 1:
-                    Header.controller.encolher();
+                    Header.controller.desativar();
+                    VideoPlayerStatusManager.instance.playCurrentVideo();
                     break;
                   case 2:
                     Header.controller.encolher();
+                    VideoPlayerStatusManager.instance.pauseAllVideos();
                     break;
                 }
               })

@@ -1,8 +1,11 @@
 import 'package:app_cienciasemmoage/core/theme/app_colors.dart';
 import 'package:app_cienciasemmoage/features/video_feed/widgets/tag.dart';
+import 'package:app_cienciasemmoage/features/video_feed/widgets/video_player_status.dart';
+import 'package:app_cienciasemmoage/features/video_feed/widgets/video_player_status_manager.dart';
 import 'package:app_cienciasemmoage/features/video_feed/widgets/youtube_service.dart';
 import 'package:app_cienciasemmoage/models/video.dart';
 import 'package:app_cienciasemmoage/shared/widgets/header/header.dart';
+import 'package:app_cienciasemmoage/shared/widgets/header/header_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -24,6 +27,7 @@ class VideoPlayer extends StatefulWidget {
 
 class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientMixin {
   late final YoutubePlayerController _controller;
+  bool hidingHUD = false;
   Video? video;
 
   @override
@@ -33,6 +37,7 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
   @override
   void initState() {
     super.initState();
+    VideoPlayerStatusManager.instance.addListener(videoStatusChanger);
     _controller = YoutubePlayerController(
       initialVideoId: widget.videoId,
       flags: YoutubePlayerFlags(
@@ -45,6 +50,19 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
     );
 
     carregarVideo();
+  }
+
+  void videoStatusChanger() {
+    switch (VideoPlayerStatusManager.instance.status) {
+      case VideoPlayerStatus.PAUSED:
+        if (_controller.value.isPlaying) {
+          forceReset();
+        }
+        break;
+      case VideoPlayerStatus.PLAYING:
+        tryPlayingVideo();
+        break;
+    }
   }
 
   void carregarVideo() async {
@@ -62,17 +80,40 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
   void tryPlayingVideo() {
     if (widget.isPlaying && isReadyToPlay) {
       _controller.play();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          Header.controller.desativar();
+        }
+      });
+      setState(() {hidingHUD = true;});
     } else {
-      _controller.seekTo(Duration.zero);
-      _controller.pause();
+      forceReset();
     }
   }
 
-  void changeVideoState() {
+  void forceReset() {
+    _controller.seekTo(Duration.zero);
+    _controller.pause();
+    setState(() {hidingHUD = false;});
+  }
+
+  void onTapChangeVideoState() {
     if (_controller.value.isPlaying) {
       _controller.pause();
+      setState(() {hidingHUD = false;});
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          Header.controller.encolher();
+        }
+      });
     } else {
       _controller.play();
+      setState(() {hidingHUD = true;});
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          Header.controller.desativar();
+        }
+      });
     }
   }
 
@@ -104,7 +145,7 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
           ),
           GestureDetector(
             onTap: () {
-              changeVideoState();
+              onTapChangeVideoState();
             },
             child: Center(
               child: YoutubePlayer(
@@ -156,31 +197,44 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
                     style: TextStyle(
                       color: Colors.white
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (video != null) ...[
-                          Text(
-                            video!.titulo, 
-                            style: TextStyle(
-                              fontSize: 26
-                            )
-                          ),
-                          SizedBox(height: 8),
-                          Wrap(
-                            spacing: 10,
-                            runSpacing: 6,
-                            children: [
-                              for (var tag in video!.tags) 
-                                Tag(text: tag)
-                            ],
-                          ),
-                          SizedBox(height: 12),
-                          // Text("Ler mais...")
-                        ],
-                      ]
+                    child: AnimatedSize(
+                      clipBehavior: Clip.none,
+                      duration: Duration(milliseconds: 200),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (video != null) ...[
+                            Text(
+                              video!.titulo, 
+                              style: TextStyle(
+                                fontSize: 24
+                              )
+                            ),
+                            SizedBox(height: 8),
+                            AnimatedAlign(
+                              alignment: Alignment.centerLeft, 
+                              duration: Duration(milliseconds: 250),
+                              heightFactor: !hidingHUD ? 1 : 0,
+                              child: AnimatedOpacity(
+                                duration: Duration(milliseconds: 200),
+                                opacity: !hidingHUD ? 1 : 0,
+                                child: Wrap(
+                                  spacing: 10,
+                                  runSpacing: 6,
+                                  children: [
+                                    for (var tag in video!.tags) 
+                                      Tag(text: tag)
+                                  ],
+                                ),
+                              )
+                            ),
+                            SizedBox(height: 12),
+                            // Text("Ler mais...")
+                          ],
+                        ]
+                      ),
                     ),
                   ) 
                 ),

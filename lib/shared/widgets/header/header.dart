@@ -88,7 +88,7 @@ class HeaderState extends State<Header> {
       duration: Duration(milliseconds: 300),
 
       width: double.infinity,
-      height: headerExpandido ? 180 : (headerDesativado ? 0 : 140),
+      height: headerExpandido ? 180 : (headerDesativado ? 70 : 140),
 
       decoration: BoxDecoration(
         color: AppColors.tertiary,
@@ -111,12 +111,12 @@ class HeaderState extends State<Header> {
               width: headerExpandido ? 80 : 65,
               height: headerExpandido ? 80 : 65,
 
-              decoration: BoxDecoration(
+              decoration: headerDesativado ? BoxDecoration() : BoxDecoration(
                 borderRadius: BorderRadius.circular(999),
                 color: AppColors.backgroundCreme
               ),
 
-              child: Image.asset(
+              child: headerDesativado ? SizedBox() : Image.asset(
                 "assets/images/Logo.png",
                 fit: BoxFit.cover,
               ),
