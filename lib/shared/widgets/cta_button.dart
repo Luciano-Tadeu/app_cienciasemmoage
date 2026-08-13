@@ -1,1 +1,0 @@
-// Botão verde limão padrão

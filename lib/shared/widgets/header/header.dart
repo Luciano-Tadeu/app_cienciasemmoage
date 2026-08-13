@@ -1,14 +1,14 @@
 import 'package:app_cienciasemmoage/core/theme/app_colors.dart';
 import 'package:app_cienciasemmoage/shared/widgets/header/header_controller.dart';
 import 'package:app_cienciasemmoage/shared/widgets/header/header_modes.dart';
+import 'package:app_cienciasemmoage/shared/widgets/badgegreen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Header extends StatefulWidget {
   static final HeaderController controller = HeaderController();
 
-  const Header({
-    super.key
-  });
+  const Header({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -63,7 +63,7 @@ class HeaderState extends State<Header> {
     await Future.delayed(Duration(milliseconds: 200));
 
     if (idAtual != animId) return;
-    
+
     setState(() => headerExpandido = false);
   }
 
@@ -88,43 +88,104 @@ class HeaderState extends State<Header> {
       duration: Duration(milliseconds: 300),
 
       width: double.infinity,
-      height: headerExpandido ? 180 : (headerDesativado ? 70 : 140),
+      height: headerExpandido ? 200 : (headerDesativado ? 70 : 140),
 
       decoration: BoxDecoration(
         color: AppColors.tertiary,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24)
-        )
+          bottomRight: Radius.circular(24),
+        ),
       ),
-      
-      child: SafeArea( 
+
+      child: SafeArea(
         bottom: false,
-        child: Padding(
-          padding: EdgeInsets.only(left: 20, right: 20, bottom: 15),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: AnimatedContainer(
-              curve: Curves.easeOut,
-              duration: Duration(milliseconds: 400),
+        child: AnimatedPadding(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOut,
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            bottom: 15,
+            top: headerExpandido ? 50 : 0,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AnimatedContainer(
+                curve: Curves.easeOut,
+                duration: Duration(milliseconds: 400),
 
-              width: headerExpandido ? 80 : 65,
-              height: headerExpandido ? 80 : 65,
+                width: headerExpandido ? 80 : 65,
+                height: headerExpandido ? 80 : 65,
 
-              decoration: headerDesativado ? BoxDecoration() : BoxDecoration(
-                borderRadius: BorderRadius.circular(999),
-                color: AppColors.backgroundCreme
+                decoration: headerDesativado
+                    ? BoxDecoration()
+                    : BoxDecoration(
+                        borderRadius: BorderRadius.circular(999),
+                        color: AppColors.backgroundCreme,
+                      ),
+
+                child: headerDesativado
+                    ? SizedBox()
+                    : Image.asset("assets/images/Logo.png", fit: BoxFit.cover),
               ),
 
-              child: headerDesativado ? SizedBox() : Image.asset(
-                "assets/images/Logo.png",
-                fit: BoxFit.cover,
+              AnimatedOpacity(
+                opacity: headerDesativado || !headerIconesExtras ? 0.0 : 1.0,
+                duration: Duration(milliseconds: 400),
+                curve: Curves.easeOut,
+
+                child: Row(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        BadgeGreen(text: '999'),
+
+                        Text(
+                          "Posts",
+                          style: GoogleFonts.nunito(
+                            textStyle: TextStyle(
+                              color: AppColors.textLight,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(width: 36),
+
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        BadgeGreen(text: '999'),
+
+                        Text(
+                          "Seguidores",
+                          style: GoogleFonts.nunito(
+                            textStyle: TextStyle(
+                              color: AppColors.textLight,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 8),
+                  ],
+                ),
               ),
-            ),
-          )
-        )
+            ],
+          ),
+        ),
       ),
     );
   }
-
 }
