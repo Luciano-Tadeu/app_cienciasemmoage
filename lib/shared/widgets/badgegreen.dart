@@ -13,7 +13,7 @@ class BadgeGreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
 
       decoration: BoxDecoration(
-        color: AppColors.secondary75,
+        color: AppColors.secondary,
         borderRadius: BorderRadius.circular(100)
       ),
 
