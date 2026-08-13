@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; 
 import 'app_colors.dart';
 
 class AppTheme {
@@ -13,6 +14,7 @@ class AppTheme {
       scaffoldBackgroundColor: AppColors.backgroundCreme,
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
+      textTheme: GoogleFonts.nunitoTextTheme(),
 
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.tertiary,
