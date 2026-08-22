@@ -88,7 +88,7 @@ class HeaderState extends State<Header> {
       duration: Duration(milliseconds: 300),
 
       width: double.infinity,
-      height: headerExpandido ? 200 : (headerDesativado ? 70 : 140),
+      height: headerExpandido ? 200 : (headerDesativado ? 90 : 140),
 
       decoration: BoxDecoration(
         color: AppColors.tertiary,

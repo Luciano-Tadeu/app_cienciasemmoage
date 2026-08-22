@@ -4,6 +4,7 @@ import 'package:app_cienciasemmoage/features/video_feed/screens/video_feed_scree
 import 'package:app_cienciasemmoage/features/home/screens/home_feed_screen.dart';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
+import 'package:app_cienciasemmoage/features/search/screens/search_feed_screen.dart';
 
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});
@@ -19,12 +20,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   final List<Widget> _telas = [
     const HomeFeedScreen(),
     const VideoFeed(),
-    const Center(
-      child: Text(
-        'Tela 3: Pesquisa (Descobrir)',
-        style: TextStyle(fontSize: 20),
-      ),
-    ),
+    const SearchFeedScreen()
   ];
 
   @override

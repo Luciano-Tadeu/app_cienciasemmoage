@@ -24,26 +24,39 @@ class YoutubeService {
     }
   }
 
-  Future<List<String>> listarVideos() async {
-    List<String> videos = [];
-    final url = Uri.parse(
-      "https://www.googleapis.com/youtube/v3/playlistItems"
-      "?part=snippet"
-      "&playlistId=$playlist"
-      "&maxResults=5"
-      "&key=$key",
-    );
+  // 1. Criamos a variável para guardar o token da próxima página
+  String? _nextPageToken;
 
-    final response = await http.get(url);
+  // 2. Adicionamos o parâmetro opcional 'carregarMais'
+  Future<List<String>> listarVideos({bool carregarMais = false}) async {
+    // Se pedirem para carregar mais, mas não tiver token, significa que os vídeos acabaram!
+    if (carregarMais && _nextPageToken == null) return [];
+
+    List<String> videos = [];
+    String urlString = "https://www.googleapis.com/youtube/v3/playlistItems"
+        "?part=snippet"
+        "&playlistId=$playlist"
+        "&maxResults=5"
+        "&key=$key"; // Lembre-se de usar o dotenv aqui se já tiver configurado!
+
+    // Se for para carregar a próxima página, adicionamos o token na URL
+    if (carregarMais && _nextPageToken != null) {
+      urlString += "&pageToken=$_nextPageToken";
+    }
+
+    final response = await http.get(Uri.parse(urlString));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      
+      // 3. Salvamos o token novo que o YouTube mandou para a próxima vez
+      _nextPageToken = data["nextPageToken"];
 
       for (var item in data["items"]) {
         videos.add(item["snippet"]["resourceId"]["videoId"]);
       }
     }
-    
+
     return videos;
   }
 
