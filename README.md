@@ -10,6 +10,10 @@ A mobile application designed to demystify and simplify scientific communication
   <a href="https://www.figma.com/proto/bVGHK5jrEGdaIkFHL4GM1K/App---Ci%C3%AAncia-Sem-Moage?node-id=36-4469" target="_blank">
     <img src="https://i.imgur.com/1gVxSsv.png" alt="Click to see the prototype" width="300"/>
   </a>
+  <br><br>
+  <a href="https://www.figma.com/proto/bVGHK5jrEGdaIkFHL4GM1K/App---Ci%C3%AAncia-Sem-Moage?node-id=36-4469" target="_blank">
+    <img src="https://img.shields.io/badge/👆_Interactive_Demonstration-1E1E1E?style=for-the-badge&logo=figma&logoColor=F24E1E" alt="Demonstration Button"/>
+  </a>
 </p>
 
 ## 🚀 Features
