@@ -30,8 +30,6 @@ A mobile application designed to demystify and simplify scientific communication
 
 ## 📁 Project Structure
 
-## 📁 Project Structure
-
 The project architecture follows a **Feature-First** approach, a modern Flutter best practice for maintainability and separation of concerns:
 
 * `/lib`: Contains the main Dart source code.
