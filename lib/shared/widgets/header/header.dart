@@ -4,9 +4,11 @@ import 'package:app_cienciasemmoage/shared/widgets/header/header_modes.dart';
 import 'package:app_cienciasemmoage/shared/widgets/badgegreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:app_cienciasemmoage/features/video_feed/widgets/youtube_service.dart';
 
 class Header extends StatefulWidget {
   static final HeaderController controller = HeaderController();
+  static final YoutubeService yt = YoutubeService();
 
   const Header({super.key});
 
@@ -23,10 +25,23 @@ class HeaderState extends State<Header> {
 
   int animId = 0;
 
+  String posts = "...";
+  String seguidores = "...";
+
   @override
   void initState() {
     super.initState();
     Header.controller.addListener(mudarModo);
+    _carregarEstatisticas();
+  }
+
+  Future<void> _carregarEstatisticas() async {
+    final dados = await Header.yt.buscarEstatisticasCanal();
+
+    setState(() {
+      posts = formatarNumero(dados["videos"] ?? "0");
+      seguidores = formatarNumero(dados["inscritos"] ?? "0");
+    });
   }
 
   void mudarModo() {
@@ -143,7 +158,7 @@ class HeaderState extends State<Header> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        BadgeGreen(text: '999'),
+                        BadgeGreen(text: posts),
 
                         Text(
                           "Posts",
@@ -164,7 +179,7 @@ class HeaderState extends State<Header> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        BadgeGreen(text: '999'),
+                        BadgeGreen(text: seguidores),
 
                         Text(
                           "Seguidores",
@@ -187,5 +202,20 @@ class HeaderState extends State<Header> {
         ),
       ),
     );
+  }
+
+  String formatarNumero(String numeroBruto) {
+    int? numero = int.tryParse(numeroBruto);
+    if (numero == null) return "0";
+
+    if (numero >= 1000000) {
+      double convertido = numero / 1000000;
+      return "${convertido.toStringAsFixed(1).replaceAll('.0', '').replaceAll('.', ',')} mi";
+    } else if (numero >= 1000) {
+      double convertido = numero / 1000;
+      return "${convertido.toStringAsFixed(1).replaceAll('.0', '').replaceAll('.', ',')} mil";
+    } else {
+      return numero.toString();
+    }
   }
 }

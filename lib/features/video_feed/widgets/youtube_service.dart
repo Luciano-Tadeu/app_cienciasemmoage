@@ -24,12 +24,10 @@ class YoutubeService {
     }
   }
 
-  // 1. Criamos a variável para guardar o token da próxima página
   String? _nextPageToken;
 
-  // 2. Adicionamos o parâmetro opcional 'carregarMais'
+
   Future<List<String>> listarVideos({bool carregarMais = false}) async {
-    // Se pedirem para carregar mais, mas não tiver token, significa que os vídeos acabaram!
     if (carregarMais && _nextPageToken == null) return [];
 
     List<String> videos = [];
@@ -38,9 +36,8 @@ class YoutubeService {
         "?part=snippet"
         "&playlistId=$playlist"
         "&maxResults=5"
-        "&key=$key"; // Lembre-se de usar o dotenv aqui se já tiver configurado!
+        "&key=$key";
 
-    // Se for para carregar a próxima página, adicionamos o token na URL
     if (carregarMais && _nextPageToken != null) {
       urlString += "&pageToken=$_nextPageToken";
     }
@@ -50,7 +47,6 @@ class YoutubeService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      // 3. Salvamos o token novo que o YouTube mandou para a próxima vez
       _nextPageToken = data["nextPageToken"];
 
       for (var item in data["items"]) {
@@ -78,5 +74,31 @@ class YoutubeService {
     } else {
       return null;
     }
+  }
+
+  Future<Map<String, String>> buscarEstatisticasCanal() async {
+    final url = Uri.parse(
+      "https://www.googleapis.com/youtube/v3/channels"
+      "?part=statistics"
+      "&forHandle=@cienciasemmoage"
+      "&key=$key"
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      if (data["items"] != null && data["items"].isNotEmpty) {
+        final stats = data["items"][0]["statistics"];
+        
+        return {
+          "inscritos": stats["subscriberCount"] ?? "0",
+          "videos": stats["videoCount"] ?? "0",
+        };
+      }
+    }
+
+    return {"inscritos": "0", "videos": "0"};
   }
 }
