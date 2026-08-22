@@ -8,14 +8,13 @@ A mobile application designed to demystify and simplify scientific communication
 
 <p align="center">
   <a href="https://www.figma.com/proto/bVGHK5jrEGdaIkFHL4GM1K/App---Ci%C3%AAncia-Sem-Moage?node-id=36-4469" target="_blank">
-    <img src="https://imgur.com/a/1KoGWVA" alt="Clique para ver o protótipo interativo" width="300"/>
+    <img src="https://i.imgur.com/1gVxSsv.png" alt="Click to see the prototype" width="300"/>
   </a>
 </p>
 
 ## 🚀 Features
 
 * **Dynamic Video Feed:** Fluid media consumption tailored for science popularization.
-* **Theme Management:** Full and dynamic support for theme transitions (Light/Dark mode), ensuring accessibility and visual comfort.
 * **Optimized UX/UI:** Interface entirely prototyped and pre-tested in Figma, with a strong focus on user retention and experience.
 * **High Responsiveness:** Built with the Flutter rendering engine to ensure native-like performance across various screen sizes and devices.
 
@@ -24,17 +23,19 @@ A mobile application designed to demystify and simplify scientific communication
 * **Framework:** [Flutter](https://flutter.dev/)
 * **Language:** Dart
 * **Design & Prototyping:** Figma
-* **State Management/Architecture:** [Insert your state management tool here, e.g., Provider, BLoC, GetX, etc.]
 
 ## 📁 Project Structure
 
-The project architecture follows Flutter's best practices for separation of concerns:
+## 📁 Project Structure
+
+The project architecture follows a **Feature-First** approach, a modern Flutter best practice for maintainability and separation of concerns:
 
 * `/lib`: Contains the main Dart source code.
-  * `/screens`: Application visual interfaces (UI).
-  * `/widgets`: Reusable custom components.
-  * `/services`: Data integration and media consumption logic.
-  * `/theme`: Dynamic color and styling management.
+  * `/core`: Core configurations and app-wide constants, such as dynamic theming and customized color palettes (`/theme`).
+  * `/features`: Encapsulates the application's functionalities by domain (e.g., `home`, `navigation`, `search`, `video_feed`). Each feature is completely independent, containing its own specific `/screens`, `/widgets`, and local logic.
+  * `/models`: Data structures and business objects, such as the `Video` entity used for API serialization.
+  * `/shared`: Global, reusable UI components (like custom headers, state controllers, and common badges) that are utilized across multiple different features.
+  * `main.dart`: The entry point of the application.
 * `/assets`: Static images, fonts, and icons used throughout the app.
 
 ## ⚙️ Getting Started

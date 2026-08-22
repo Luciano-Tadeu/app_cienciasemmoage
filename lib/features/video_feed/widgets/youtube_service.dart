@@ -1,18 +1,18 @@
 import 'dart:convert';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:app_cienciasemmoage/models/video.dart';
 import 'package:http/http.dart' as http;
 
 class YoutubeService {
   static const String playlist = "UUsS0P1wnlLt0hDanRq-SgzA";
-  static const String key = "AIzaSyAG0i7XhnkUb6C3lFVkkS3aJAjeFffMIBk";
+  static String get key => dotenv.env['YOUTUBE_API_KEY'] ?? '';
 
   Future<void> buscarPlaylist() async {
     final url = Uri.parse(
       "https://www.googleapis.com/youtube/v3/channels"
       "?part=contentDetails"
       "&forHandle=@cienciasemmoage"
-      "&key=$key"
+      "&key=$key",
     );
 
     final response = await http.get(url);
@@ -33,7 +33,8 @@ class YoutubeService {
     if (carregarMais && _nextPageToken == null) return [];
 
     List<String> videos = [];
-    String urlString = "https://www.googleapis.com/youtube/v3/playlistItems"
+    String urlString =
+        "https://www.googleapis.com/youtube/v3/playlistItems"
         "?part=snippet"
         "&playlistId=$playlist"
         "&maxResults=5"
@@ -48,7 +49,7 @@ class YoutubeService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      
+
       // 3. Salvamos o token novo que o YouTube mandou para a próxima vez
       _nextPageToken = data["nextPageToken"];
 
