@@ -7,7 +7,9 @@
 A mobile application designed to demystify and simplify scientific communication. **Ciência sem Moage** brings the general public closer to academic knowledge through an intuitive, dynamic interface focused on rapid video content consumption.
 
 <p align="center">
-  <img src="[Path to your image/GIF or Imgur URL]" alt="App Demonstration" width="300"/>
+  <a href="https://www.figma.com/proto/bVGHK5jrEGdaIkFHL4GM1K/App---Ci%C3%AAncia-Sem-Moage?node-id=36-4469" target="_blank">
+    <img src="https://imgur.com/a/1KoGWVA" alt="Clique para ver o protótipo interativo" width="300"/>
+  </a>
 </p>
 
 ## 🚀 Features
