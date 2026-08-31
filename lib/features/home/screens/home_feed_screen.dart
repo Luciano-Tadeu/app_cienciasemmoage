@@ -52,6 +52,8 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       if (videoRico != null) videosCompletos.add(videoRico);
     }
 
+    if (!mounted) return;
+
     setState(() {
       _videos = videosCompletos;
       _carregandoInicial = false;
@@ -59,6 +61,8 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
   }
 
 Future<void> _buscarMaisVideos() async {
+    if (!mounted) return;
+
     setState(() => _carregandoMais = true);
 
     List<String> novosIds = await _youtubeService.listarVideos(carregarMais: true);

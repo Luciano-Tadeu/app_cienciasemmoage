@@ -1,4 +1,5 @@
 import 'package:app_cienciasemmoage/features/video_feed/widgets/video_player_status_manager.dart';
+import 'package:app_cienciasemmoage/features/video_feed/widgets/youtube_service.dart';
 import 'package:app_cienciasemmoage/shared/widgets/header/header.dart';
 import 'package:app_cienciasemmoage/features/video_feed/screens/video_feed_screen.dart';
 import 'package:app_cienciasemmoage/features/home/screens/home_feed_screen.dart';
@@ -17,14 +18,36 @@ class _MainScaffoldState extends State<MainScaffold> {
   // 0 = Home, 1 = Vídeos, 2 = Pesquisa
   int _abaAtual = 0;
   final PageController controller = PageController();
-  final List<Widget> _telas = [
-    const HomeFeedScreen(),
-    const VideoFeed(),
-    const SearchFeedScreen()
-  ];
+  final PageController _videoFeedController = PageController();
+  final YoutubeService _youtubeService = YoutubeService();
+
+  void changePage(int page) {
+    _abaAtual = page;
+    controller.animateToPage(
+      page,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void playNewVideo(int page) {
+    _videoFeedController.jumpToPage(page);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> telas = [
+      const HomeFeedScreen(),
+      VideoFeed(
+        pageController: _videoFeedController,
+        youtubeService: _youtubeService,
+      ),
+      SearchFeedScreen(
+        pageChanger: changePage,
+        playNewVideo: playNewVideo,
+      )
+    ];
+
     return Scaffold(
       body: Stack(
         children: [
@@ -52,7 +75,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                 }
               }),
             },
-            children: [_telas[0], _telas[1], _telas[2]],
+            children: [telas[0], telas[1], telas[2]],
           ),
           Header(),
           Align(
@@ -126,12 +149,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          _abaAtual = indice;
-          controller.animateToPage(
-            indice,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
+          changePage(indice);
         },
         behavior: HitTestBehavior.opaque,
 

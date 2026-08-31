@@ -4,7 +4,14 @@ import 'package:app_cienciasemmoage/features/video_feed/widgets/youtube_service.
 import 'package:flutter/material.dart';
 
 class VideoFeed extends StatefulWidget  {
-  const VideoFeed({super.key});
+  final PageController pageController;
+  final YoutubeService youtubeService;
+
+  const VideoFeed({
+    super.key, 
+    required this.pageController, 
+    required this.youtubeService
+  });
   
   @override
   State<StatefulWidget> createState() {
@@ -27,7 +34,9 @@ class VideoFeedState extends State<VideoFeed> with AutomaticKeepAliveClientMixin
   }
 
   void getVideos() async {
-    List<String> videos = await YoutubeService().listarVideos();
+    List<String> videos = await widget.youtubeService.listarVideos();
+
+    if (!mounted) return;
     
     setState(() {
       videoList = videos;
@@ -38,32 +47,49 @@ class VideoFeedState extends State<VideoFeed> with AutomaticKeepAliveClientMixin
   Widget build(BuildContext context) {
     super.build(context);
 
+    if (videoList.isEmpty) {
+      return Container(
+          color: Colors.black,
+          child: Center(
+            child: SizedBox(
+            width: 50,
+            height: 50,
+            child: CircularProgressIndicator(
+              color: AppColors.tertiary,
+            ),
+          ),
+        ),
+      );
+    }
+    
     return Scaffold(
-      body: PageView(
+      body: PageView.builder(
+        controller: widget.pageController,
         allowImplicitScrolling: true,
         scrollDirection: Axis.vertical,
-        children: [
-          if (videoList.isNotEmpty) 
-            for (int i = 0; i < 3; i++) 
-              VideoPlayer(videoId: videoList[i], isPlaying: actPage == i)
-          else 
-            Container(
-              color: Colors.black,
-              child: Center(
-                child: SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: CircularProgressIndicator(
-                    color: AppColors.tertiary,
-                  ),
-                ),
-              ),
-            )
-        ],
-        onPageChanged: (idx) {
+        itemCount: videoList.length,
+        onPageChanged: (idx) async {
           setState(() {
             actPage = idx;
           });
+
+          if (idx == videoList.length - 1) {
+            List<String> novosVideos = await widget.youtubeService.listarVideos(carregarMais: true);
+
+            setState(() {
+              videoList.addAll(novosVideos);
+            });
+          }
+
+          
+        },
+        itemBuilder: (context, index) {
+          final isNear = (index - actPage).abs() <= 1;
+          return VideoPlayer(
+            videoId: videoList[index], 
+            isPlaying: actPage == index,
+            enabled: isNear,
+          );
         },
       ),
     ); 

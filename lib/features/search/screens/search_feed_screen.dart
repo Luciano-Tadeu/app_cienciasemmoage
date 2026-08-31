@@ -4,7 +4,14 @@ import 'package:app_cienciasemmoage/features/search/screens/badge_green_animated
 import 'package:app_cienciasemmoage/features/home/screens/home_white_card.dart';
 
 class SearchFeedScreen extends StatelessWidget {
-  const SearchFeedScreen({super.key});
+  final void Function(int) pageChanger;
+  final void Function(int) playNewVideo;
+
+  const SearchFeedScreen({
+    super.key, 
+    required this.pageChanger,
+    required this.playNewVideo
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +26,12 @@ class SearchFeedScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
+                ElevatedButton(
+                  onPressed: () {
+                    pageChanger(1);
+                    playNewVideo(2);
+                  }
+                , child: Text("teste")),
                 BadgeGreenAnimated(text: "Teste"),
                 SizedBox(width: 12),
                 BadgeGreenAnimated(text: "Física"),

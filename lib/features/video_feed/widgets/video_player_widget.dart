@@ -12,11 +12,13 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 class VideoPlayer extends StatefulWidget {
   final String videoId;
   final bool isPlaying;
+  final bool enabled;
 
   const VideoPlayer({
     super.key, 
     required this.videoId,
-    required this.isPlaying
+    required this.isPlaying,
+    required this.enabled
   });
 
   @override
@@ -26,7 +28,7 @@ class VideoPlayer extends StatefulWidget {
 } 
 
 class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientMixin {
-  late final YoutubePlayerController _controller;
+  YoutubePlayerController? _controller;
   bool hidingHUD = false;
   Video? video;
 
@@ -37,6 +39,12 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
   @override
   void initState() {
     super.initState();
+
+    enableController();
+    carregarVideo();
+  }
+
+  void enableController() {
     VideoPlayerStatusManager.instance.addListener(videoStatusChanger);
     _controller = YoutubePlayerController(
       initialVideoId: widget.videoId,
@@ -49,13 +57,32 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
       )
     );
 
-    carregarVideo();
+    setState(() {});
+  }
+
+  void disableController() {
+    final controller = _controller;
+
+    if (controller == null) return;
+
+    controller.dispose();
+
+    setState(() {
+      _controller = null;
+      isReadyToPlay = false;
+    });
   }
 
   void videoStatusChanger() {
+    final controller = _controller;
+
+    if (controller == null) {
+      return;
+    }
+
     switch (VideoPlayerStatusManager.instance.status) {
       case VideoPlayerStatus.PAUSED:
-        if (_controller.value.isPlaying) {
+        if (controller.value.isPlaying) {
           forceReset();
         }
         break;
@@ -78,8 +105,14 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
   }
 
   void tryPlayingVideo() {
+    final controller = _controller;
+
+    if (controller == null) {
+      return;
+    }
+
     if (widget.isPlaying && isReadyToPlay) {
-      _controller.play();
+      controller.play();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           Header.controller.desativar();
@@ -92,14 +125,22 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
   }
 
   void forceReset() {
-    _controller.seekTo(Duration.zero);
-    _controller.pause();
+    final controller = _controller;
+
+    if (controller == null) return;
+
+    controller.seekTo(Duration.zero);
+    controller.pause();
     setState(() {hidingHUD = false;});
   }
 
   void onTapChangeVideoState() {
-    if (_controller.value.isPlaying) {
-      _controller.pause();
+    final controller = _controller;
+
+    if (controller == null) return;
+
+    if (controller.value.isPlaying) {
+      controller.pause();
       setState(() {hidingHUD = false;});
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
@@ -107,7 +148,7 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
         }
       });
     } else {
-      _controller.play();
+      controller.play();
       setState(() {hidingHUD = true;});
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
@@ -119,7 +160,8 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
 
   @override
   void dispose() {
-    _controller.dispose();
+    VideoPlayerStatusManager.instance.removeListener(videoStatusChanger);
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -128,10 +170,22 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
     super.didUpdateWidget(oldWidget);
   
     if (oldWidget.isPlaying != widget.isPlaying) tryPlayingVideo();
+
+    if (oldWidget.enabled != widget.enabled) {
+      if (widget.enabled) {
+        enableController();
+      } else {
+        disableController();
+      }
+    } 
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = _controller;
+
+    if (!widget.enabled || controller == null) return Text("nada");
+
     super.build(context);
 
     return Container(
@@ -149,12 +203,12 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
             },
             child: Center(
               child: YoutubePlayer(
-                controller: _controller,
+                controller: controller,
                 aspectRatio: 9 / 20,
                 showVideoProgressIndicator: false,
                 onEnded: (e) {
-                  _controller.seekTo(Duration.zero);
-                  _controller.play();
+                  controller.seekTo(Duration.zero);
+                  controller.play();
                 },
                 onReady: () { 
                   isReadyToPlay = true;
