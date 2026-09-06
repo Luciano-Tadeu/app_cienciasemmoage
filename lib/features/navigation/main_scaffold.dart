@@ -30,8 +30,13 @@ class _MainScaffoldState extends State<MainScaffold> {
     );
   }
 
-  void playNewVideo(int page) {
-    _videoFeedController.jumpToPage(page);
+  void playNewVideo(String videoId) async {
+    int state = await VideoFeedState().manualVideoInsert(videoId);
+
+    if (state != -1) {
+      changePage(1);
+      _videoFeedController.jumpToPage(state);
+    }
   }
 
   @override
@@ -43,7 +48,6 @@ class _MainScaffoldState extends State<MainScaffold> {
         youtubeService: _youtubeService,
       ),
       SearchFeedScreen(
-        pageChanger: changePage,
         playNewVideo: playNewVideo,
       )
     ];

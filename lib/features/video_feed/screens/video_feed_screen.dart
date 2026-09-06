@@ -22,24 +22,44 @@ class VideoFeed extends StatefulWidget  {
 class VideoFeedState extends State<VideoFeed> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  int actPage = 0;
+  static int actPage = 0;
 
-  List<String> videoList = [];
+  static final List<String> videoList = [];
+  static final Set<String> loadedVideos = {};
 
   @override
   void initState() {
     super.initState();
 
-    getVideos();
+    getVideos(false);
   }
 
-  void getVideos() async {
-    List<String> videos = await widget.youtubeService.listarVideos();
+  Future<int> manualVideoInsert(String videoId) async {
+    final video = await YoutubeService().buscarVideo(videoId);
+
+    if (video == null) return -1;
+
+    if (loadedVideos.add(video.id)) {
+      videoList.insert(actPage + 1, video.id);
+      
+      if (mounted) {setState(() {});}
+      return actPage + 1;
+    }
+
+    return videoList.indexWhere((video) => video == videoId);
+  }
+
+  void getVideos(bool carregarMais) async {
+    List<String> videos = await widget.youtubeService.listarVideos(carregarMais: carregarMais);
 
     if (!mounted) return;
     
     setState(() {
-      videoList = videos;
+      for (final video in videos) {
+        if (loadedVideos.add(video)) {
+          videoList.add(video);
+        }
+      }
     });
   }
 
@@ -74,18 +94,13 @@ class VideoFeedState extends State<VideoFeed> with AutomaticKeepAliveClientMixin
           });
 
           if (idx == videoList.length - 1) {
-            List<String> novosVideos = await widget.youtubeService.listarVideos(carregarMais: true);
-
-            setState(() {
-              videoList.addAll(novosVideos);
-            });
+            getVideos(true);
           }
-
-          
         },
         itemBuilder: (context, index) {
           final isNear = (index - actPage).abs() <= 1;
           return VideoPlayer(
+            key: ValueKey(videoList[index]),
             videoId: videoList[index], 
             isPlaying: actPage == index,
             enabled: isNear,

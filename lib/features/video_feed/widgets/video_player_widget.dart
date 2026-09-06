@@ -127,7 +127,7 @@ class VideoPlayerState extends State<VideoPlayer> with AutomaticKeepAliveClientM
   void forceReset() {
     final controller = _controller;
 
-    if (controller == null) return;
+    if (controller == null || !mounted) return;
 
     controller.seekTo(Duration.zero);
     controller.pause();

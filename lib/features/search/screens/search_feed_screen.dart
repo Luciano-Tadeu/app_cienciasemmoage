@@ -4,12 +4,10 @@ import 'package:app_cienciasemmoage/features/search/screens/badge_green_animated
 import 'package:app_cienciasemmoage/features/home/screens/home_white_card.dart';
 
 class SearchFeedScreen extends StatelessWidget {
-  final void Function(int) pageChanger;
-  final void Function(int) playNewVideo;
+  final void Function(String) playNewVideo;
 
   const SearchFeedScreen({
     super.key, 
-    required this.pageChanger,
     required this.playNewVideo
     });
 
@@ -28,8 +26,7 @@ class SearchFeedScreen extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    pageChanger(1);
-                    playNewVideo(2);
+                    playNewVideo("r-ZVUtmxdnk");
                   }
                 , child: Text("teste")),
                 BadgeGreenAnimated(text: "Teste"),
