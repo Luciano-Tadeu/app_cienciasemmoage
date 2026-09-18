@@ -66,6 +66,8 @@ Future<void> _buscarMaisVideos() async {
     setState(() => _carregandoMais = true);
 
     List<String> novosIds = await _youtubeService.listarVideos(carregarMais: true);
+
+    if (!mounted) return;
     
     if (novosIds.isEmpty) {
       setState(() => _carregandoMais = false);
@@ -78,6 +80,8 @@ Future<void> _buscarMaisVideos() async {
       Video? videoRico = await _youtubeService.buscarVideo(id);
       if (videoRico != null) novosVideosRicos.add(videoRico);
     }
+
+    if (!mounted) return;
 
     setState(() { 
       _videos.addAll(novosVideosRicos); 
