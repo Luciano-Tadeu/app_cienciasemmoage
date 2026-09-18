@@ -3,9 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeWhiteCard extends StatelessWidget {
-  final String title, desc, section, time;
+  final String title, desc, section, time, videoUrl;
+  final void Function(String) playNewVideo;
 
-  const HomeWhiteCard({super.key, required this.title, required this.desc, required this.section, required this.time});
+  const HomeWhiteCard(
+    {
+      super.key, 
+      required this.title, 
+      required this.desc, 
+      required this.section, 
+      required this.time, 
+      required this.videoUrl,
+      required this.playNewVideo
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +28,7 @@ class HomeWhiteCard extends StatelessWidget {
         highlightColor: Colors.black.withValues(alpha: 0.05),
         onTap: (){
           print("CLICOU NO CARD: $title");
-          //TODO: Redirecionar para o vídeo
+          playNewVideo(videoUrl);
         },
         child: Container(
           padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),

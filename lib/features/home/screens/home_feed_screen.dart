@@ -6,7 +6,9 @@ import 'package:app_cienciasemmoage/models/video.dart';
 import 'package:app_cienciasemmoage/features/video_feed/widgets/youtube_service.dart';
 
 class HomeFeedScreen extends StatefulWidget {
-  const HomeFeedScreen({super.key});
+  final void Function(String) playNewVideo;
+
+  const HomeFeedScreen({super.key, required this.playNewVideo});
 
   @override
   State<HomeFeedScreen> createState() => _HomeFeedScreenState();
@@ -129,6 +131,8 @@ Future<void> _buscarMaisVideos() async {
               section: 'Lançamento',
               time: video.tempo,
               imageUrl: video.thumb,
+              videoUrl: video.id,
+              playNewVideo: widget.playNewVideo,
             ),
           );
         } 
@@ -137,9 +141,11 @@ Future<void> _buscarMaisVideos() async {
           padding: const EdgeInsets.only(bottom: 16),
           child: HomeWhiteCard(
             title: video.titulo,
+            videoUrl: video.id,
             desc: video.descricao.compareTo("") == 0? "Ver mais..." : video.descricao, 
             section: video.tags.isNotEmpty ? video.tags[0] : "Ciência",
             time: video.tempo,
+            playNewVideo: widget.playNewVideo,
           ),
         );
       },

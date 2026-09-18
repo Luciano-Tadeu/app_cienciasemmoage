@@ -35,14 +35,18 @@ class _MainScaffoldState extends State<MainScaffold> {
 
     if (state != -1) {
       changePage(1);
-      _videoFeedController.jumpToPage(state);
+      if (_videoFeedController.hasClients) {
+        _videoFeedController.jumpToPage(state);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> telas = [
-      const HomeFeedScreen(),
+      HomeFeedScreen(
+        playNewVideo: playNewVideo,
+      ),
       VideoFeed(
         pageController: _videoFeedController,
         youtubeService: _youtubeService,

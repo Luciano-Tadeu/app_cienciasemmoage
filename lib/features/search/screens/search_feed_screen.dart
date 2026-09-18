@@ -24,11 +24,6 @@ class SearchFeedScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    playNewVideo("r-ZVUtmxdnk");
-                  }
-                , child: Text("teste")),
                 BadgeGreenAnimated(text: "Teste"),
                 SizedBox(width: 12),
                 BadgeGreenAnimated(text: "Física"),

@@ -36,14 +36,20 @@ class VideoFeedState extends State<VideoFeed> with AutomaticKeepAliveClientMixin
 
   Future<int> manualVideoInsert(String videoId) async {
     final video = await YoutubeService().buscarVideo(videoId);
+    int videoPage = actPage;
 
     if (video == null) return -1;
 
     if (loadedVideos.add(video.id)) {
-      videoList.insert(actPage + 1, video.id);
+      if (videoList.isEmpty) {
+        videoList.add(video.id);
+      } else {
+        videoList.insert(actPage + 1, video.id);
+        videoPage++;
+      }
       
       if (mounted) {setState(() {});}
-      return actPage + 1;
+      return videoPage;
     }
 
     return videoList.indexWhere((video) => video == videoId);
